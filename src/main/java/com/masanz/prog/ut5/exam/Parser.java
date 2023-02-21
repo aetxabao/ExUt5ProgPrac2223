@@ -22,7 +22,9 @@ public class Parser {
      */
     public static String getGrupoNombre(String xml) {
         //TODO: getGrupoNombre (6p)
-        return "";
+        int i = xml.indexOf("<nombre>") + "<nombre>".length();
+        int j = xml.indexOf("</nombre>");
+        return xml.substring(i,j);
     }
 
     /**
@@ -32,7 +34,21 @@ public class Parser {
      */
     public static Persona[] getPersonas(String xml) {
         //TODO: getPersonas (20p)
-        return new Persona[0];
+        String nombre, puntos;
+        int i, j, n;
+        String[] a = xml.split("<persona>");
+        n = a.length - 1;
+        Persona[] personas = new Persona[n];
+        for (int k = 1; k < a.length; k++) {
+            i = a[k].indexOf("<nombre>") + "<nombre>".length();
+            j = a[k].indexOf("</nombre>");
+            nombre = a[k].substring(i,j);
+            i = a[k].indexOf("<puntos>") + "<puntos>".length();
+            j = a[k].indexOf("</puntos>");
+            puntos = a[k].substring(i,j);
+            personas[k-1] = new Persona(nombre, Integer.parseInt(puntos));
+        }
+        return personas;
     }
 
 }

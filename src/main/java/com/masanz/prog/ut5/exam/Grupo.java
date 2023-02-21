@@ -19,6 +19,9 @@ public class Grupo {
      */
     public Grupo(String nombre) {
         //TODO: Grupo constructor (6p)
+        this.nombre = nombre;
+        personas = new Persona[MAX];
+        tam = 0;
     }
 
 
@@ -57,7 +60,12 @@ public class Grupo {
      */
     public String toString() {
         //TODO: toString (8p)
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Grupo: ").append(nombre).append("\n");
+        for (int i = 0; i < tam; i++) {
+            sb.append(i+1).append(". ").append(personas[i].toString()).append("\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -73,6 +81,23 @@ public class Grupo {
 //        if (tam<MAX) {
 //            personas[tam++] = p;
 //        }
+        if (tam==0){
+            personas[0] = p;
+        } else if (tam==1) {
+            personas[1] = p;
+            if (personas[0].getNombre().compareTo(personas[1].getNombre())>0){
+                personas[1] = personas[0];
+                personas[0] = p;
+            }
+        }else {
+            int j = tam - 1;
+            while (j >= 0 && personas[j].getNombre().compareTo(p.getNombre())>0){
+                personas[j + 1] = personas[j];
+                j--;
+            }
+            personas[j + 1] = p;
+        }
+        tam++;
     }
 
     /**
@@ -82,6 +107,20 @@ public class Grupo {
      */
     public int getPosicionDicotomica(String nombre) {
         //TODO: getPosicionDicotomica (8p)
+        int cmp, mitad;
+        int izquierda = 0;
+        int derecha = tam - 1;
+        while ( izquierda <= derecha ) {
+            mitad = (izquierda + derecha) / 2;
+            cmp = personas[mitad].getNombre().compareTo(nombre);
+            if (cmp < 0) {
+                izquierda = mitad + 1;
+            } else if (cmp == 0) {
+                return mitad;
+            } else {
+                derecha = mitad - 1;
+            }
+        }
         return -1;
     }
 
@@ -101,7 +140,15 @@ public class Grupo {
      */
     public String[][] getNombresCols(int cols) {
         //TODO: getNombresCols (12p)
-        return new String[0][0];
+        int fils = (int) Math.ceil(((double) tam)/cols);
+        String[][] nombres = new String[fils][cols];
+        for (int i = 0; i < tam; i++) {
+            nombres[i/cols][i%cols] = personas[i].getNombre();
+        }
+        for (int i = tam; i < fils*cols; i++) {
+            nombres[i/cols][i%cols] = "";
+        }
+        return nombres;
     }
 
     /**
@@ -119,6 +166,14 @@ public class Grupo {
      */
     public void printCols(int cols) {
         //TODO: printCols (12p)
+        int fils = (int) Math.ceil(((double) tam)/cols);
+        String[][] nombres = getNombresCols(cols);
+        for (int i = fils-1; i >=0; i--) {
+            for (int j = 0; j < cols; j++) {
+                System.out.printf("%-10s",nombres[i][j]);
+            }
+            System.out.println();
+        }
     }
 
 
@@ -136,7 +191,24 @@ public class Grupo {
      */
     public Persona[] getCercanos(String nombre, int n) {
         //TODO: getCercanos (20p)
-        return new Persona[0];
+        int pos = getPosicionDicotomica(nombre);
+        if (pos < 0) {
+            return new Persona[0];
+        }else if (tam < n) {
+            return Arrays.copyOf(personas,tam);
+        }else if (pos-n/2 < 0) {
+            Persona[] a = new Persona[n];
+            System.arraycopy(personas,0,a,0,n);
+            return a;
+        }else if (pos+n/2+1 > tam) {
+            Persona[] a = new Persona[n];
+            System.arraycopy(personas,tam-n,a,0,n);
+            return a;
+        }else {
+            Persona[] a = new Persona[n];
+            System.arraycopy(personas,pos-n/2,a,0,n);
+            return a;
+        }
     }
 
 }
