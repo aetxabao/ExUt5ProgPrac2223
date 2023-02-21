@@ -1,0 +1,38 @@
+@startuml
+class Parser {
++ {static} Grupo xml2Grupo(String)
++ {static} String getGrupoNombre(String)
++ {static} Persona[] getPersonas(String)
+}
+class Grupo {
++ int MAX
+- String nombre
+- Persona[] personas
+- int tam
++ <<Create>> Grupo(String)
++ String getNombre()
++ Persona[] getPersonas()
++ Persona[] getArrayCompletoPersonas()
++ int getTam()
++ void setPersonasTam(Persona[],int)
++ String toString()
++ void insercionDirectaOrdenadaPorNombre(Persona)
++ int getPosicionDicotomica(String)
++ String[][] getNombresCols(int)
++ void printCols(int)
++ Persona[] getCercanos(String,int)
+}
+class Persona {
+- String nombre
+- int puntos
++ <<Create>> Persona(String,int)
++ String getNombre()
++ int getPuntos()
++ String toString()
+}
+
+Grupo o-- Persona
+Parser .left.> Grupo
+Parser ..>Persona
+
+@enduml
